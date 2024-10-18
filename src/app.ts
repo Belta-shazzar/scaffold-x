@@ -1,6 +1,8 @@
 import express from "express";
 import { Routes } from "@/interfaces/routes.interface";
 import config from "@/config";
+import morgan from "morgan";
+import { logger, stream } from "@utils/logger";
 
 export class App {
   public app: express.Application;
@@ -18,7 +20,8 @@ export class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log("Locked in for now!");
+      logger.info(`======= ENV: ${this.env} ========`);
+      logger.info(`🚀 App listening on the port ${this.port}`);
     });
   }
 
@@ -26,7 +29,9 @@ export class App {
     return this.app;
   }
 
-  private initializeMiddleware() {}
+  private initializeMiddleware() {
+    this.app.use(morgan("common", { stream }));
+  }
 
   private initializeRoutes(routes: Routes[]) {
     routes.forEach((route) => {
