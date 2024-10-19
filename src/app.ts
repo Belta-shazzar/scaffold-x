@@ -1,10 +1,10 @@
 import express from "express";
 import { Routes } from "@/interfaces/routes.interface";
 import config from "@/config";
+import prisma from "@/config/prisma";
 import morgan from "morgan";
 import cors from "cors";
 import { logger, stream } from "@utils/logger";
-import { PrismaClient } from "@prisma/client";
 import { HttpException } from "@/exceptions/http.exception";
 import hpp from "hpp";
 import helmet from "helmet";
@@ -17,13 +17,11 @@ export class App {
   private app: express.Application;
   private env: string;
   private port: number;
-  private prisma: PrismaClient;
 
   constructor(routes: Routes[]) {
     this.app = express();
     this.env = config.app.node_env;
     this.port = config.app.port;
-    this.prisma = new PrismaClient();
 
     this.initializeMiddleware();
     this.initializeResponseTransform();
@@ -32,7 +30,7 @@ export class App {
   }
 
   public listen() {
-    this.prisma
+    prisma
       .$connect()
       .then(() => {
         logger.info("🟢 Database connection successful");

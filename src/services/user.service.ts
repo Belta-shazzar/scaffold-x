@@ -2,9 +2,10 @@ import { SignUpDto } from "@/dto/auth.dto";
 import { HttpException } from "@/exceptions/http.exception";
 import { PrismaClient, User } from "@prisma/client";
 import httpStatus from "http-status";
+import prisma from "@/config/prisma";
 
 export class UserService {
-  private user = new PrismaClient().user;
+  private user = prisma.user;
 
   public async createUser(signUpDto: SignUpDto): Promise<User> {
     const user = await this.user.create({
